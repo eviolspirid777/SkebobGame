@@ -35,10 +35,12 @@ export class Game extends Phaser.Scene {
     preload() {
         this.load.image('background', 'assets/baseFone.jpg');
         this.load.spritesheet('bird', 'assets/scebob.png', { frameWidth: 136, frameHeight: 36 });
+        this.load.spritesheet('bird_dead', 'assets/SkebobDead.png', { frameWidth: 236, frameHeight: 96 });
         this.load.audio('skebobMusic', 'assets/SCEBOB_MUSIC.m4a');
     }
 
     create() {
+        this.score = 0;
         this.music = this.sound.add('skebobMusic');
 
         // Настраиваем музыку (если нужно)
@@ -78,10 +80,21 @@ export class Game extends Phaser.Scene {
     }
 
     update() {
+        console.log(this.game.config.height)
+        console.group("BIRD")
+        console.log(this.bird.y)
+        console.log(this.bird.x)
+        console.groupEnd()
         this.background.tilePositionX += this.backgroundSpeed;
 
         if (Phaser.Input.Keyboard.JustDown(this.cursors)) {
             this.jump();
+        }
+
+        // Проверяем выход за верхнюю и нижнюю границы
+        if (this.bird.y <= 61 || this.bird.y >= 659) {
+            this.hitObstacle();
+            return; // Прекращаем выполнение update
         }
 
         // Удаляем преграды, которые ушли за экран
@@ -101,7 +114,7 @@ export class Game extends Phaser.Scene {
     }
 
     createObstacle() {
-        const gap = Math.max(250, 350 - this.score * 2); // Разрыв между преградами
+        const gap = Math.max(150, 350 - (this.score * 2)); // Разрыв между преградами
         const obstaclePosition = Phaser.Math.Between(200, 400);
 
         // Верхняя преграда
@@ -162,8 +175,8 @@ export class Game extends Phaser.Scene {
     }
 
     hitObstacle() {
+        this.bird.setTexture("bird_dead")
         this.physics.pause();
-        this.score = 0;
         this.music.pause();
         this.backgroundSpeed = 0;
         this.bird.setTint(0xff0000);

@@ -44,27 +44,10 @@ export class Menu extends Phaser.Scene {
             startButton.setStyle({ fill: '#cc0000' });
             this.playStartSoundAndStartGame();
         });
-
-        // Также запускаем по любому клику/касанию
-        this.input.on('pointerdown', (pointer) => {
-            // Проверяем, что клик не по кнопке (чтобы не играло дважды)
-            if (!startButton.getBounds().contains(pointer.x, pointer.y)) {
-                this.playStartSoundAndStartGame();
-            }
-        });
-
-        // И по нажатию пробела/ентера
-        this.input.keyboard.on('keydown-SPACE', () => {
-            this.playStartSoundAndStartGame();
-        });
-
-        this.input.keyboard.on('keydown-ENTER', () => {
-            this.playStartSoundAndStartGame();
-        });
     }
 
     update() {
-        this.background.tilePositionX += 2;
+        this.background.tilePositionX += 1;
     }
 
     playStartSoundAndStartGame() {
